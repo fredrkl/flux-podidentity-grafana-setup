@@ -19,6 +19,9 @@ param location string = resourceGroup().location
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
 
 resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+  dependsOn: [
+    virtualNetwork
+  ]
   name: uniqueStorageName
   location: location
   sku: {
@@ -29,6 +32,10 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
     supportsHttpsTrafficOnly: true
   }
 }
+
+
+
+
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: 'demo-vnet'
@@ -44,12 +51,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
         name: 'AKS'
         properties: {
           addressPrefix: '10.0.0.0/24'
+          privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
       {
         name: 'private-endpoints'
         properties: {
           addressPrefix: '10.0.1.0/24'
+          privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
     ]

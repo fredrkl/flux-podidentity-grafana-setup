@@ -1,6 +1,8 @@
 name: Create Infrastructure
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
 
 env:
   CLUSTER_NAME: Flux-Podidentity-Demo
@@ -8,19 +10,30 @@ env:
 concurrency: creating
 
 jobs:
-
-  Setup-a-new-AKS:
+  Setup-Infra:
     runs-on: ubuntu-latest
     steps:
-
+    - name: Checkout 
+      uses: actions/checkout@master
+    
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - uses: azure/arm-deploy@v1
+      id: deploy
+      with:
+        resourceGroupName: ${{ env.CLUSTER_NAME }}
+        deplomentMode: Incremental
+        template: ./bicep/main.bicep
+        parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
+        failOnStdErr: true
 
     - name: Azure CLI script
       uses: azure/CLI@v1
       with:
         azcliversion: 2.40.0
         inlineScript: |
+          echo ${{ steps.deploy.outputs.storageEndpoint }}
           echo "Hello World!"

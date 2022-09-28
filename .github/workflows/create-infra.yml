@@ -3,7 +3,7 @@ name: Create Infrastructure
 on: [workflow_dispatch]
 
 env:
-  CLUSTER_NAME: Flux-PodIndentity
+  CLUSTER_NAME: Flux-Podidentity-Demo
 
 concurrency: creating
 

@@ -26,7 +26,7 @@ jobs:
       with:
         resourceGroupName: ${{ env.CLUSTER_NAME }}
         deploymentMode: Incremental
-        deploymentName: "Main Deploy"
+        deploymentName: "Main-Deploy"
         template: ./bicep/main.bicep
         parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
         failOnStdErr: true

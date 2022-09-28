@@ -1,0 +1,26 @@
+name: Create Infrastructure
+
+on: [workflow_dispatch]
+
+env:
+  CLUSTER_NAME: Flux-PodIndentity
+
+concurrency: creating
+
+jobs:
+
+  Setup-a-new-AKS:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure CLI script
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.40.0
+        inlineScript: |
+          az aks create -g ${{ env.CLUSTER_NAME }} -n ${{ env.CLUSTER_NAME }} --generate-ssh-keys

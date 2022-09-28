@@ -23,4 +23,4 @@ jobs:
       with:
         azcliversion: 2.40.0
         inlineScript: |
-          az aks create -g ${{ env.CLUSTER_NAME }} -n ${{ env.CLUSTER_NAME }} --generate-ssh-keys
+          echo "Hello World!"

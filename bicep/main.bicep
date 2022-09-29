@@ -19,9 +19,6 @@ param location string = resourceGroup().location
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
 
 resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  dependsOn: [
-    virtualNetwork
-  ]
   name: uniqueStorageName
   location: location
   sku: {
@@ -33,9 +30,26 @@ resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-
-
-
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
+  name: 'my-private-endpoint'
+  location: location
+  properties: {
+    privateLinkServiceConnections: [
+      {
+        name: 'my-private-endpoint'
+        properties: {
+          privateLinkServiceId: stg.id
+          groupIds: [
+            'blob'
+          ]
+        }
+      }
+    ]
+    subnet: {
+      id: virtualNetwork.properties.subnets[1].id
+    }
+  }
+}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: 'demo-vnet'

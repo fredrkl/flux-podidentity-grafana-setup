@@ -13,65 +13,12 @@ param storagePrefix string
   'Standard_RAGZRS'
 ])
 param storageSKU string = 'Standard_LRS'
-
 param location string = resourceGroup().location
 
+var privateEndpointName = 'myPrivateEndpoint'
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
 var privateDnsZoneName = 'privatelink.${environment().suffixes.storage}'
-
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: privateDnsZoneName
-  location: 'global'
-  properties: {}
-  dependsOn: [
-    virtualNetwork
-  ]
-}
-
-resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: privateDnsZone
-  name: '${privateDnsZoneName}-link'
-  location: 'global'
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: virtualNetwork.id
-    }
-  }
-}
-
-resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: uniqueStorageName
-  location: location
-  sku: {
-    name: storageSKU
-  }
-  kind: 'StorageV2'
-  properties: {
-    supportsHttpsTrafficOnly: true
-  }
-}
-
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
-  name: 'my-private-endpoint'
-  location: location
-  properties: {
-    privateLinkServiceConnections: [
-      {
-        name: 'my-private-endpoint'
-        properties: {
-          privateLinkServiceId: stg.id
-          groupIds: [
-            'blob'
-          ]
-        }
-      }
-    ]
-    subnet: {
-      id: virtualNetwork.properties.subnets[1].id
-    }
-  }
-}
+var pvtEndpointDnsGroupName = '${privateEndpointName}/mydnsgroupname'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: 'demo-vnet'
@@ -101,6 +48,77 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   }
 }
 
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: privateDnsZoneName
+  location: 'global'
+  properties: {}
+  dependsOn: [
+    virtualNetwork
+  ]
+}
+
+resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
+  name: pvtEndpointDnsGroupName
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'config1'
+        properties: {
+          privateDnsZoneId: privateDnsZone.id
+        }
+      }
+    ]
+  }
+  dependsOn: [
+    privateEndpoint
+  ]
+}
+
+
+resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  parent: privateDnsZone
+  name: '${privateDnsZoneName}-link'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: virtualNetwork.id
+    }
+  }
+}
+
+resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+  name: uniqueStorageName
+  location: location
+  sku: {
+    name: storageSKU
+  }
+  kind: 'StorageV2'
+  properties: {
+    supportsHttpsTrafficOnly: true
+  }
+}
+
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
+  name: privateEndpointName
+  location: location
+  properties: {
+    privateLinkServiceConnections: [
+      {
+        name: 'my-private-endpoint'
+        properties: {
+          privateLinkServiceId: stg.id
+          groupIds: [
+            'blob'
+          ]
+        }
+      }
+    ]
+    subnet: {
+      id: virtualNetwork.properties.subnets[1].id
+    }
+  }
+}
 
 output storageEndpoint object = stg.properties.primaryEndpoints
 output storageEndpointBlob string = stg.properties.primaryEndpoints.blob

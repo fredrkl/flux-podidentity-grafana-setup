@@ -125,6 +125,9 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
 resource thePublicIp 'Microsoft.Network/publicIPAddresses@2022-01-01' = {
   name: 'thePublicIpName'
   location: location
+  sku: {
+    name: 'Standard'
+  }
 }
 
 resource bastion 'Microsoft.Network/bastionHosts@2022-01-01' = {

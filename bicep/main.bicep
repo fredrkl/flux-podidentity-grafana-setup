@@ -26,7 +26,7 @@ var pvtEndpointDnsGroupName = '${privateEndpointName}/mydnsgroupname'
 
 var publicIpAddressName = 'bastianTestVmIp'
 var networkInterfaceName = 'bastianTestVmInterface'
-var vmName = 'bastianTestVmName'
+var vmName = 'bastianVm'
 var VmSize = 'Standard_D2_v3'
 var osDiskType = 'StandardSSD_LRS'
 

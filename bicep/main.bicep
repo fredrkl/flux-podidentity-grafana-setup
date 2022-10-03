@@ -122,13 +122,10 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
 
 // Bastion setup
 // VM and Bastion
-
 resource thePublicIp 'Microsoft.Network/publicIPAddresses@2022-01-01' = {
   name: 'thePublicIpName'
   location: location
 }
-
-
 
 resource bastion 'Microsoft.Network/bastionHosts@2022-01-01' = {
   name: 'TheBastion'
@@ -139,14 +136,17 @@ resource bastion 'Microsoft.Network/bastionHosts@2022-01-01' = {
         id: 'theIp'
         name: 'thename'
         properties:{
-          subnet: virtualNetwork.properties.subnets[1].id
-          publicIPAddress: thePublicIp
+          subnet: {
+            id: virtualNetwork.properties.subnets[1].id
+          } 
+          publicIPAddress: {
+            id: thePublicIp.id
+          }
         }
       }
     ]
   }
 }
-
 
 output storageEndpoint object = stg.properties.primaryEndpoints
 output storageEndpointBlob string = stg.properties.primaryEndpoints.blob

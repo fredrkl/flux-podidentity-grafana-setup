@@ -17,7 +17,7 @@ param storageSKU string = 'Standard_LRS'
 param location string = resourceGroup().location
 
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
-var privateDnsZoneName = 'private-zone'
+var privateDnsZoneName = 'privatelink${environment().suffixes.storage}'
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateDnsZoneName
@@ -26,6 +26,18 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   dependsOn: [
     virtualNetwork
   ]
+}
+
+resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  parent: privateDnsZone
+  name: '${privateDnsZoneName}-link'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: virtualNetwork.id
+    }
+  }
 }
 
 resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
@@ -91,3 +103,4 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
 
 
 output storageEndpoint object = stg.properties.primaryEndpoints
+output storageEndpointBlob string = stg.properties.primaryEndpoints.blob

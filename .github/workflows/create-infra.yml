@@ -37,4 +37,5 @@ jobs:
         azcliversion: 2.40.0
         inlineScript: |
           echo ${{ steps.deploy.outputs.storageEndpoint }}
+          echo ${{ steps.deploy.outputs.storageEndpointBlob }}
           echo "Hello World!"

@@ -137,7 +137,7 @@ resource bastion 'Microsoft.Network/bastionHosts@2022-01-01' = {
         name: 'thename'
         properties:{
           subnet: {
-            id: virtualNetwork.properties.subnets[1].id
+            id: virtualNetwork.properties.subnets[0].id
           } 
           publicIPAddress: {
             id: thePublicIp.id

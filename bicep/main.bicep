@@ -15,10 +15,21 @@ param storagePrefix string
 param storageSKU string = 'Standard_LRS'
 param location string = resourceGroup().location
 
+param vmAdminUsername string = 'user'
+@secure()
+param vmAdminPassword string = ''
+
 var privateEndpointName = 'myPrivateEndpoint'
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
 var privateDnsZoneName = 'privatelink.${environment().suffixes.storage}'
 var pvtEndpointDnsGroupName = '${privateEndpointName}/mydnsgroupname'
+
+var publicIpAddressName = 'bastianTestVmIp'
+var networkInterfaceName = 'bastianTestVmInterface'
+var vmName = 'bastianTestVmName'
+var VmSize = 'Standard_D2_v3'
+var osDiskType = 'StandardSSD_LRS'
+
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: 'demo-vnet'
@@ -33,14 +44,21 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
       {
         name: 'AzureBastionSubnet'
         properties: {
-          addressPrefix: '10.0.0.0/24'
+          addressPrefix: '10.0.0.0/29'
           privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
       {
         name: 'private-endpoints'
         properties: {
-          addressPrefix: '10.0.1.0/24'
+          addressPrefix: '10.0.0.8/29'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+        }
+      }
+      {
+        name: 'VMs'
+        properties: {
+          addressPrefix: '10.0.128.0/17'
           privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
@@ -73,7 +91,6 @@ resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
     privateEndpoint
   ]
 }
-
 
 resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZone
@@ -154,6 +171,86 @@ resource bastion 'Microsoft.Network/bastionHosts@2022-01-01' = {
     ]
   }
 }
+
+//// The VMs
+resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
+  name: publicIpAddressName
+  location: location
+  tags: {
+    displayName: publicIpAddressName
+  }
+  properties: {
+    publicIPAllocationMethod: 'Dynamic'
+  }
+}
+
+resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
+  name: networkInterfaceName
+  location: location
+  tags: {
+    displayName: networkInterfaceName
+  }
+  properties: {
+    ipConfigurations: [
+      {
+        name: 'ipConfig1'
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          publicIPAddress: {
+            id: publicIpAddress.id
+          }
+          subnet: {
+            id: virtualNetwork.properties.subnets[2].id
+          }
+        }
+      }
+    ]
+  }
+}
+
+resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
+  name: vmName
+  location: location
+  tags: {
+    displayName: vmName
+  }
+  properties: {
+    hardwareProfile: {
+      vmSize: VmSize
+    }
+    osProfile: {
+      computerName: vmName
+      adminUsername: vmAdminUsername
+      adminPassword: vmAdminPassword
+    }
+    storageProfile: {
+      imageReference: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2019-Datacenter'
+        version: 'latest'
+      }
+      osDisk: {
+        name: '${vmName}OsDisk'
+        caching: 'ReadWrite'
+        createOption: 'FromImage'
+        managedDisk: {
+          storageAccountType: osDiskType
+        }
+        diskSizeGB: 128
+      }
+    }
+    networkProfile: {
+      networkInterfaces: [
+        {
+          id: networkInterface.id
+        }
+      ]
+    }
+  }
+}
+
+
 
 output storageEndpoint object = stg.properties.primaryEndpoints
 output storageEndpointBlob string = stg.properties.primaryEndpoints.blob

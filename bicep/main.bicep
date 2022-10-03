@@ -128,6 +128,10 @@ resource thePublicIp 'Microsoft.Network/publicIPAddresses@2022-01-01' = {
   sku: {
     name: 'Standard'
   }
+  properties: {
+    publicIPAddressVersion: 'IPv4'
+    publicIPAllocationMethod: 'Static'
+  }
 }
 
 resource bastion 'Microsoft.Network/bastionHosts@2022-01-01' = {

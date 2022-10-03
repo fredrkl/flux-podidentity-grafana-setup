@@ -17,7 +17,7 @@ param storageSKU string = 'Standard_LRS'
 param location string = resourceGroup().location
 
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
-var privateDnsZoneName = 'privatelink${environment().suffixes.storage}'
+var privateDnsZoneName = 'privatelink.${environment().suffixes.storage}'
 
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateDnsZoneName

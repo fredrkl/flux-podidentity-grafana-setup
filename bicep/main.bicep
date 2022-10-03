@@ -31,7 +31,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
     }
     subnets: [
       {
-        name: 'AKS'
+        name: 'AzureBastionSubnet'
         properties: {
           addressPrefix: '10.0.0.0/24'
           privateLinkServiceNetworkPolicies: 'Enabled'

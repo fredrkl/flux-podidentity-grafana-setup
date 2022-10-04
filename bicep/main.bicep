@@ -21,7 +21,7 @@ param vmAdminPassword string = ''
 
 var privateEndpointName = 'myPrivateEndpoint'
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
-var privateDnsZoneName = 'privatelink.${environment().suffixes.storage}'
+var privateDnsZoneName = 'privatelink${environment().suffixes.storage}'
 var pvtEndpointDnsGroupName = '${privateEndpointName}/mydnsgroupname'
 
 var publicIpAddressName = 'bastianTestVmIp'

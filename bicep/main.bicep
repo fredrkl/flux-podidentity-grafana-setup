@@ -15,7 +15,7 @@ param storagePrefix string
 param storageSKU string = 'Standard_LRS'
 param location string = resourceGroup().location
 
-param vmAdminUsername string = 'user'
+param vmAdminUsername string = 'us_a_22'
 @secure()
 param vmAdminPassword string = ''
 

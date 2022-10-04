@@ -21,7 +21,7 @@ param vmAdminPassword string = ''
 
 var privateEndpointName = 'myPrivateEndpoint'
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
-var privateDnsZoneName = 'privatelink${environment().suffixes.storage}'
+var privateDnsZoneName = 'privatelink.blob.${environment().suffixes.storage}'
 var pvtEndpointDnsGroupName = '${privateEndpointName}/mydnsgroupname'
 
 var publicIpAddressName = 'bastianTestVmIp'
@@ -31,6 +31,7 @@ var VmSize = 'Standard_D2_v3'
 var osDiskType = 'StandardSSD_LRS'
 
 
+// Network and private DNS Zone
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: 'demo-vnet'
   location: location
@@ -75,23 +76,6 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   ]
 }
 
-resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
-  name: pvtEndpointDnsGroupName
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'config1'
-        properties: {
-          privateDnsZoneId: privateDnsZone.id
-        }
-      }
-    ]
-  }
-  dependsOn: [
-    privateEndpoint
-  ]
-}
-
 resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDnsZone
   name: '${privateDnsZoneName}-link'
@@ -104,6 +88,8 @@ resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
   }
 }
 
+
+// Private Storage Account Endpoint
 resource stg 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: uniqueStorageName
   location: location
@@ -134,6 +120,21 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
     subnet: {
       id: virtualNetwork.properties.subnets[1].id
     }
+  }
+}
+
+resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
+  name: pvtEndpointDnsGroupName
+  parent: privateEndpoint
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'config1'
+        properties: {
+          privateDnsZoneId: privateDnsZone.id
+        }
+      }
+    ]
   }
 }
 
@@ -196,9 +197,9 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
         name: 'ipConfig1'
         properties: {
           privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: {
-            id: publicIpAddress.id
-          }
+          //publicIPAddress: {
+          //  id: publicIpAddress.id
+          //}
           subnet: {
             id: virtualNetwork.properties.subnets[2].id
           }

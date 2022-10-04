@@ -122,9 +122,9 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
     }
   }
 }
+
 resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
   name: pvtEndpointDnsGroupName
-  parent: privateEndpoint
   properties: {
     privateDnsZoneConfigs: [
       {
@@ -135,6 +135,9 @@ resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
       }
     ]
   }
+  dependsOn: [
+    privateEndpoint
+  ]
 }
 
 // Bastion setup

@@ -5,7 +5,7 @@ on:
   push:
 
 env:
-  CLUSTER_NAME: Flux-Podidentity-Demo
+  RESOURCE_GROUP: Flux-Podidentity-Demo
 
 concurrency: creating
 
@@ -24,18 +24,9 @@ jobs:
     - uses: azure/arm-deploy@v1
       id: deploy
       with:
-        resourceGroupName: ${{ env.CLUSTER_NAME }}
+        resourceGroupName: ${{ env.RESOURCE_GROUP }}
         deploymentMode: Incremental
         deploymentName: "Main-Deploy"
         template: ./bicep/main.bicep
-        parameters: 'storagePrefix=mystore storageSKU=Standard_LRS vmAdminPassword=${{ secrets.PASSWORD }}'
+        parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
         failOnStdErr: true
-
-    - name: Azure CLI script
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.40.0
-        inlineScript: |
-          echo ${{ steps.deploy.outputs.storageEndpoint }}
-          echo ${{ steps.deploy.outputs.storageEndpointBlob }}
-          echo "Hello World!"

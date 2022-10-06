@@ -25,5 +25,5 @@ jobs:
         region: north-europe
         deploymentName: "Main-Deploy"
         template: ./bicep/main.bicep
-        parameters: 'resourceGroupName=Flux-Podidentity-Demo location=north-europe'
+        parameters: 'resourceGroupName=Flux-Podidentity-Demo location=northeurope'
         failOnStdErr: true

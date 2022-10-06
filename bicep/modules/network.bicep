@@ -7,21 +7,21 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.0.0.0/16'
+        '10.0.0.0/20'
       ]
     }
     subnets: [
       {
         name: 'private-endpoints'
         properties: {
-          addressPrefix: '10.0.0.8/29'
+          addressPrefix: '10.0.0.0/28'
           privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
       {
         name: 'AKS'
         properties: {
-          addressPrefix: '10.0.128.0/17'
+          addressPrefix: '10.0.8.0/21'
           privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }

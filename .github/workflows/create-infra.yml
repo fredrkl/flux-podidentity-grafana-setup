@@ -22,7 +22,7 @@ jobs:
       id: deploy
       with:
         scope: subscription
-        region: north-europe
+        region: northeurope
         deploymentName: "Main-Deploy"
         template: ./bicep/main.bicep
         parameters: 'resourceGroupName=Flux-Podidentity-Demo location=northeurope'

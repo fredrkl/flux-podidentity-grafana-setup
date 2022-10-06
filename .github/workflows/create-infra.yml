@@ -22,6 +22,7 @@ jobs:
       id: deploy
       with:
         scope: subscription
+        region: north-europe
         deploymentMode: Incremental
         deploymentName: "Main-Deploy"
         template: ./bicep/main.bicep

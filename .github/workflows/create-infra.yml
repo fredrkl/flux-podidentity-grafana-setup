@@ -4,9 +4,6 @@ on:
   workflow_dispatch:
   push:
 
-env:
-  RESOURCE_GROUP: Flux-Podidentity-Demo
-
 concurrency: creating
 
 jobs:
@@ -24,9 +21,9 @@ jobs:
     - uses: azure/arm-deploy@v1
       id: deploy
       with:
-        resourceGroupName: ${{ env.RESOURCE_GROUP }}
+        scope: subscription
         deploymentMode: Incremental
         deploymentName: "Main-Deploy"
         template: ./bicep/main.bicep
-        parameters: 'storagePrefix=mystore storageSKU=Standard_LRS'
+        parameters: 'storagePrefix=mystore resourceGroupName=Flux-Podidentity-Demo location=north-europe'
         failOnStdErr: true

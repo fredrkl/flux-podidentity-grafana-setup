@@ -1,6 +1,7 @@
 param location string = resourceGroup().location
 
 var privateBlobDnsZoneName = 'privatelink.blob.${environment().suffixes.storage}'
+var privateAcrDnsZoneName = 'privatelink.azurecr.io'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: 'demo-vnet'
@@ -30,6 +31,27 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   }
 }
 
+resource privateAcrDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: privateAcrDnsZoneName
+  location: 'global'
+  properties: {}
+  dependsOn: [
+    virtualNetwork
+  ]
+}
+
+resource privateDnsZoneLinkAcr 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+  parent: privateAcrDnsZone
+  name: '${privateAcrDnsZoneName}-link'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: virtualNetwork.id
+    }
+  }
+}
+
 resource privateBlobDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateBlobDnsZoneName
   location: 'global'
@@ -51,22 +73,7 @@ resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
   }
 }
 
-/*
-// Extend with private endpoint DNS group
-resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
-  name: '${privateDnsZone.name}/blobs'
-  properties: {
-    privateDnsZoneConfigs: [
-      {
-        name: 'BlobDnsGroup'
-        properties: {
-          privateDnsZoneId: privateDnsZone.id
-        }
-      }
-    ]
-  }
-}*/
-
 output private_endpoint_subnet_id string = virtualNetwork.properties.subnets[0].id
 output aks_subnet_id string = virtualNetwork.properties.subnets[1].id
 output private_DNS_Blob_Zone_id string = privateBlobDnsZone.id
+output private_DNS_ACR_Zone_id string = privateAcrDnsZone.id

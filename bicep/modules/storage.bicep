@@ -64,4 +64,7 @@ resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
       }
     ]
   }
+  dependsOn:[
+    privateEndpoint
+  ]
 }

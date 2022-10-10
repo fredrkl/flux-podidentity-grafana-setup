@@ -50,5 +50,7 @@ resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
   }
 }
 
+// Extend with private endpoint dns group
+
 output private_endpoint_subnet_id string = virtualNetwork.properties.subnets[0].id
 output aks_subnet_id string = virtualNetwork.properties.subnets[1].id

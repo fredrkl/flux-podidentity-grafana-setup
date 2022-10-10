@@ -27,6 +27,14 @@ module storage 'modules/storage.bicep' = {
   }
 }
 
+module acr 'modules/acr.bicep' = {
+  scope: rg
+  name: 'acr'
+  params: {
+    location: rg.location
+  }
+}
+
 module aks 'modules/aks.bicep' = {
   scope: rg
   name: 'AKS'

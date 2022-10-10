@@ -1,6 +1,7 @@
 param location string = resourceGroup().location
 param privateDnsZoneName string
 
+
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: 'demo-vnet'
   location: location
@@ -52,7 +53,7 @@ resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
 
 // Extend with private endpoint DNS group
 resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
-  name: '${privateDnsZone}-DNS-Group'
+  name: '${privateDnsZone}/blobs'
   properties: {
     privateDnsZoneConfigs: [
       {

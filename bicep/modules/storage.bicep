@@ -1,8 +1,11 @@
 param location string = resourceGroup().location
-param uniqueStorageName string = ''
+param storagePrefix string = ''
 param privateEndpointStorageSubnetId string = ''
+param privateBlobDnsZoneId string = ''
 
 var privateEndpointName = 'myPrivateEndpoint'
+var pvtEndpointDnsGroupName = '${privateEndpointName}/blob'
+var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
 
 @allowed([
   'Standard_LRS'
@@ -48,7 +51,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
     }
   }
 }
-/*
+
 resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
   name: pvtEndpointDnsGroupName
   properties: {
@@ -56,12 +59,9 @@ resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
       {
         name: 'config1'
         properties: {
-          privateDnsZoneId: privateDnsZone.id
+          privateDnsZoneId: privateBlobDnsZoneId
         }
       }
     ]
   }
-  dependsOn: [
-    privateEndpoint
-  ]
-}*/
+}

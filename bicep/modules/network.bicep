@@ -1,6 +1,6 @@
 param location string = resourceGroup().location
-param privateDnsZoneName string
 
+var privateBlobDnsZoneName = 'privatelink.blob.${environment().suffixes.storage}'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: 'demo-vnet'
@@ -30,8 +30,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   }
 }
 
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: privateDnsZoneName
+resource privateBlobDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+  name: privateBlobDnsZoneName
   location: 'global'
   properties: {}
   dependsOn: [
@@ -40,8 +40,8 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 }
 
 resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: privateDnsZone
-  name: '${privateDnsZoneName}-link'
+  parent: privateBlobDnsZone
+  name: '${privateBlobDnsZoneName}-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -69,3 +69,4 @@ resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
 
 output private_endpoint_subnet_id string = virtualNetwork.properties.subnets[0].id
 output aks_subnet_id string = virtualNetwork.properties.subnets[1].id
+output private_DNS_Blob_Zone_id string = privateBlobDnsZone.id

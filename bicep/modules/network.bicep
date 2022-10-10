@@ -53,7 +53,7 @@ resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
 
 // Extend with private endpoint DNS group
 resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
-  name: '${privateDnsZone}/blobs'
+  name: '${privateDnsZone.name}/blobs'
   properties: {
     privateDnsZoneConfigs: [
       {

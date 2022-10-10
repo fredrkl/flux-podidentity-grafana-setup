@@ -50,7 +50,20 @@ resource privateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
   }
 }
 
-// Extend with private endpoint dns group
+// Extend with private endpoint DNS group
+resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
+  name: '${privateDnsZone}-DNS-Group'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'BlobDnsGroup'
+        properties: {
+          privateDnsZoneId: privateDnsZone.id
+        }
+      }
+    ]
+  }
+}
 
 output private_endpoint_subnet_id string = virtualNetwork.properties.subnets[0].id
 output aks_subnet_id string = virtualNetwork.properties.subnets[1].id

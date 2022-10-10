@@ -8,7 +8,6 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-// Network and private DNS Zone
 module network 'modules/network.bicep' = {
   scope: rg
   name: 'networking'
@@ -27,3 +26,15 @@ module storage 'modules/storage.bicep' = {
     storagePrefix: 'mydemo'
   }
 }
+
+module aks 'modules/aks.bicep' = {
+  scope: rg
+  name: 'AKS'
+  params:{
+    location: rg.location
+    dnsPrefix: 'monitoring'
+    nodeSubnetId: network.outputs.aks_subnet_id
+  }
+}
+
+output controlPlaneFQDN string = aks.outputs.controlPlaneFQDN

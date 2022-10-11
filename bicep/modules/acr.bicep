@@ -22,6 +22,9 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
         name: 'my-private-endpoint-acr'
         properties: {
           privateLinkServiceId: acr.id
+          groupIds: [
+            'registry'
+          ]
         }
       }
     ]

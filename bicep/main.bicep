@@ -27,17 +27,17 @@ module storage 'modules/storage.bicep' = {
   }
 }
 
-/*module acr 'modules/acr.bicep' = {
+module acr 'modules/acr.bicep' = {
   scope: rg
   name: 'acr'
   params: {
     location: rg.location
-    privateEndpointSubnetId: network.outputs.private_endpoint_subnet_id
-    privateAcrDnsZoneId: network.outputs.private_DNS_ACR_Zone_id
+    //privateEndpointSubnetId: network.outputs.private_endpoint_subnet_id
+    //privateAcrDnsZoneId: network.outputs.private_DNS_ACR_Zone_id
   }
-}*/
+}
 
-module aks 'modules/aks.bicep' = {
+/*module aks 'modules/aks.bicep' = {
   scope: rg
   name: 'AKS'
   params:{
@@ -47,4 +47,4 @@ module aks 'modules/aks.bicep' = {
   }
 }
 
-output controlPlaneFQDN string = aks.outputs.controlPlaneFQDN
+output controlPlaneFQDN string = aks.outputs.controlPlaneFQDN*/

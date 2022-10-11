@@ -1,5 +1,5 @@
 param location string = resourceGroup().location
-param privateEndpointStorageSubnetId string = ''
+param privateEndpointSubnetId string = ''
 param privateAcrDnsZoneId string = ''
 
 var privateEndpointName = 'myPrivateAcrEndpoint'
@@ -26,7 +26,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
       }
     ]
     subnet: {
-      id: privateEndpointStorageSubnetId
+      id: privateEndpointSubnetId
     }
   }
 }

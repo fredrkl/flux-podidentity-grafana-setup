@@ -20,7 +20,7 @@ module storage 'modules/storage.bicep' = {
   scope: rg
   name: 'storage'
   params: {
-    privateEndpointStorageSubnetId: network.outputs.private_endpoint_subnet_id
+    privateEndpointSubnetId: network.outputs.private_endpoint_subnet_id
     privateBlobDnsZoneId: network.outputs.private_DNS_Blob_Zone_id
     location: rg.location
     storagePrefix: 'mydemo'
@@ -32,7 +32,7 @@ module acr 'modules/acr.bicep' = {
   name: 'acr'
   params: {
     location: rg.location
-    privateEndpointStorageSubnetId: network.outputs.private_endpoint_subnet_id
+    privateEndpointSubnetId: network.outputs.private_endpoint_subnet_id
     privateAcrDnsZoneId: network.outputs.private_DNS_ACR_Zone_id
   }
 }

@@ -1,6 +1,6 @@
 param location string = resourceGroup().location
 param storagePrefix string = ''
-param privateEndpointStorageSubnetId string = ''
+param privateEndpointSubnetId string = ''
 param privateBlobDnsZoneId string = ''
 
 var privateEndpointName = 'myPrivateEndpoint'
@@ -47,7 +47,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
       }
     ]
     subnet: {
-      id: privateEndpointStorageSubnetId
+      id: privateEndpointSubnetId
     }
   }
 }

@@ -27,7 +27,7 @@ module storage 'modules/storage.bicep' = {
   }
 }
 
-module acr 'modules/acr.bicep' = {
+/*module acr 'modules/acr.bicep' = {
   scope: rg
   name: 'acr'
   params: {
@@ -35,7 +35,7 @@ module acr 'modules/acr.bicep' = {
     privateEndpointSubnetId: network.outputs.private_endpoint_subnet_id
     privateAcrDnsZoneId: network.outputs.private_DNS_ACR_Zone_id
   }
-}
+}*/
 
 module aks 'modules/aks.bicep' = {
   scope: rg

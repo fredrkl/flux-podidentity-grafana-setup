@@ -40,7 +40,7 @@ resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: 'acrendpointdnsgroup'
+        name: 'config1'
         properties: {
           privateDnsZoneId: privateAcrDnsZoneId 
         }

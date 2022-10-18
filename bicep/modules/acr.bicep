@@ -1,6 +1,6 @@
 param location string = resourceGroup().location
 param privateEndpointSubnetId string = ''
-//param privateAcrDnsZoneId string = ''
+param privateAcrDnsZoneId string = ''
 
 var privateEndpointName = 'myPrivateAcrEndpoint'
 var containerregistryname = 'fluxdemocontainerregistry'
@@ -33,7 +33,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
     }
   }
 }
-/*
+
 resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
   name: privateEndpointName
   properties: {
@@ -50,4 +50,3 @@ resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
     privateEndpoint
   ]
 }
-*/

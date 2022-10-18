@@ -33,7 +33,7 @@ module acr 'modules/acr.bicep' = {
   params: {
     location: rg.location
     privateEndpointSubnetId: network.outputs.private_endpoint_subnet_id
-    //privateAcrDnsZoneId: network.outputs.private_DNS_ACR_Zone_id
+    privateAcrDnsZoneId: network.outputs.private_DNS_ACR_Zone_id
   }
 }
 

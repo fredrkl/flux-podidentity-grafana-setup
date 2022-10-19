@@ -4,7 +4,7 @@ param privateEndpointSubnetId string = ''
 param privateBlobDnsZoneId string = ''
 
 var privateEndpointName = 'myPrivateEndpoint'
-var pvtEndpointDnsGroupName = '${privateEndpointName}/blob'
+var pvtEndpointDnsGroupName = '${privateEndpointName}-blob'
 var uniqueStorageName = '${storagePrefix}${uniqueString(resourceGroup().id)}'
 
 @allowed([
@@ -37,7 +37,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
   properties: {
     privateLinkServiceConnections: [
       {
-        name: 'my-private-endpoint'
+        name: 'myprivateendpoint'
         properties: {
           privateLinkServiceId: stg.id
           groupIds: [

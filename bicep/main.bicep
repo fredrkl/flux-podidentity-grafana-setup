@@ -47,4 +47,5 @@ module acr 'modules/acr.bicep' = {
   }
 }
 
-output controlPlaneFQDN string = aks.outputs.controlPlaneFQDN*/
+output controlPlaneFQDN string = aks.outputs.controlPlaneFQDN
+*/

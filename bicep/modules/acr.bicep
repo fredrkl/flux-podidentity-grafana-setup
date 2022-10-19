@@ -3,6 +3,7 @@ param privateEndpointSubnetId string = ''
 param privateAcrDnsZoneId string = ''
 
 var privateEndpointName = 'myPrivateAcrEndpoint'
+var pvtEndpointDnsGroupName = '${privateEndpointName}-acr'
 var containerregistryname = 'fluxdemocontainerregistry'
 
 resource acr 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
@@ -19,7 +20,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
   properties: {
     privateLinkServiceConnections: [
       {
-        name: 'my-private-endpoint-acr'
+        name: 'myprivateendpointacr'
         properties: {
           privateLinkServiceId: acr.id
           groupIds: [
@@ -35,12 +36,12 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-01-01' = {
 }
 
 resource pvtEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2021-05-01' = {
-  name: privateEndpointName
+  name: pvtEndpointDnsGroupName
   parent: privateEndpoint
   properties: {
     privateDnsZoneConfigs: [
       {
-        name: 'config1'
+        name: 'config'
         properties: {
           privateDnsZoneId: privateAcrDnsZoneId 
         }

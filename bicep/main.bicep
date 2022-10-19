@@ -37,7 +37,7 @@ module acr 'modules/acr.bicep' = {
   }
 }
 
-/*module aks 'modules/aks.bicep' = {
+module aks 'modules/aks.bicep' = {
   scope: rg
   name: 'AKS'
   params:{
@@ -48,4 +48,3 @@ module acr 'modules/acr.bicep' = {
 }
 
 output controlPlaneFQDN string = aks.outputs.controlPlaneFQDN
-*/

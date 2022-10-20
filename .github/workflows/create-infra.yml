@@ -41,7 +41,9 @@ jobs:
     - name: Kubectl tool installer
       uses: Azure/setup-kubectl@v3
 
-    - name: Kick off GitOps
-      run: |
-        kubectl get nodes
-        kubectl get ns
+    - name: Azure CLI script
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.30.0
+        inlineScript: |
+          az aks command invoke --resource-group ${{ env.CLUSTER_NAME }} --name ${{ env.CLUSTER_NAME }} --command "kubectl get nodes"

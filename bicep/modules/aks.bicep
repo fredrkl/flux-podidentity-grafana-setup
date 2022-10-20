@@ -28,6 +28,9 @@ resource aks 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' = {
   }
   properties: {
     dnsPrefix: dnsPrefix
+    apiServerAccessProfile: {
+      enablePrivateCluster: true
+    }
     agentPoolProfiles: [
       {
         name: 'agentpool'

@@ -1,6 +1,7 @@
 targetScope='subscription'
 
 param resourceGroupName string
+param clusterName string
 param location string
 
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -43,6 +44,7 @@ module aks 'modules/aks.bicep' = {
   params:{
     location: rg.location
     dnsPrefix: 'monitoring'
+    clusterName: clusterName
     nodeSubnetId: network.outputs.aks_subnet_id
   }
 }

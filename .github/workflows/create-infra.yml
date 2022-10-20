@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   push:
 
+env:
+  CLUSTER_NAME: Flux-Helm-Demo
+
 concurrency: creating
 
 jobs:
@@ -20,10 +23,22 @@ jobs:
     
     - uses: azure/arm-deploy@v1
       id: deploy
+      name: Setup infra
       with:
         scope: subscription
         region: northeurope
         deploymentName: "Main-Deploy"
         template: ./bicep/main.bicep
-        parameters: 'resourceGroupName=Flux-Podidentity-Demo location=northeurope'
+        parameters: 'resourceGroupName=${{ env.CLUSTER_NAME }} clusterName=${{ env.CLUSTER_NAME }} location=northeurope'
         failOnStdErr: true
+
+    - name: Set Context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: ${{ env.CLUSTER_NAME }}
+        cluster-name: ${{ env.CLUSTER_NAME }}
+
+    - name: Kick off GitOps
+      run: |
+        kubectl get nodes
+        kubectl get ns

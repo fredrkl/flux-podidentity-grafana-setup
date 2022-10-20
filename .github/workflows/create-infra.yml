@@ -38,6 +38,9 @@ jobs:
         resource-group: ${{ env.CLUSTER_NAME }}
         cluster-name: ${{ env.CLUSTER_NAME }}
 
+    - name: Kubectl tool installer
+      uses: Azure/setup-kubectl@v3
+
     - name: Kick off GitOps
       run: |
         kubectl get nodes
